@@ -135,14 +135,14 @@ int main(int argc, char* argv[]) {
             if(size > MAX_SNIPPET_DOC_SIZE) size = MAX_SNIPPET_DOC_SIZE;
             size_t len = fread(buf, sizeof(char), size, corpus);
             buf[len] = '\0';
-            make_lowercase(buf, len);
+            make_lowercase(buf, (unsigned int)len);
             DIE_IF_ERROR(wp_snippetize_string(query, FIELD_NAME, buf, RESULT_SNIPPETS_TO_SHOW, &num_snippets, start_offsets, end_offsets));
             printf("found %d occurrences within this doc\n", num_snippets);
             //printf(">> [%s] (%d)\n", buf, len);
 
             for(uint32_t j = 0; j < num_snippets; j++) {
               pos_t start = start_offsets[j] < OFFSET_PADDING ? 0 : (start_offsets[j] - OFFSET_PADDING);
-              pos_t end = end_offsets[j] > (len - OFFSET_PADDING) ? len : end_offsets[j] + OFFSET_PADDING;
+              pos_t end = end_offsets[j] > ((unsigned int)len - OFFSET_PADDING) ? (unsigned int)len : end_offsets[j] + OFFSET_PADDING;
               char hack = buf[end];
               buf[end] = '\0';
               printf("| %s\n", &buf[start]);
